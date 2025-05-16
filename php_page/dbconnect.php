@@ -1,11 +1,18 @@
 <?php
-    $postgre = pg_connect("host=pghost port=5432 user=postgres password=1234 dbname=postgres");
-    //-----------------Проверяем, успешность соединения-----------------
-    if (!$postgre) {
-        die("<p><strong>Ошибка подключения к БД</strong></p><p><strong>Код ошибки: </strong> ". $postgre->connect_errno ." </p><p><strong>Описание ошибки:</strong> ".$postgre->connect_error."</p>");
-    }
-    //-----------------Добавление переменной, которая будет содержать адрес (URL) сайта
-    $server_ip = gethostbyname($_SERVER['SERVER_NAME']);
-    $server_port = gethostbyname($_SERVER['SERVER_PORT']);
-    $address_site = "http://$server_ip:$server_port";
+$host = getenv('PGHOST') ?: 'pghost';
+$port = getenv('PGPORT') ?: '5432';
+$user = getenv('PGUSER') ?: 'postgres';
+$password = getenv('PGPASSWORD') ?: '1234';
+$dbname = getenv('PGDATABASE') ?: 'postgres';
+
+$connection_string = "host=$host port=$port dbname=$dbname user=$user password=$password";
+$postgre = pg_connect($connection_string);
+
+if (!$postgre) {
+    die("<p><strong>Ошибка подключения к БД</strong></p>");
+}
+
+$server_ip = gethostbyname($_SERVER['SERVER_NAME']);
+$server_port = $_SERVER['SERVER_PORT'];
+$address_site = "http://$server_ip:$server_port";
 ?>
